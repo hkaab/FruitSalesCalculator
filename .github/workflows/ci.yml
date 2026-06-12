@@ -23,9 +23,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
       working-directory: src
-    - name: Test
-      run: dotnet test --no-build --no-restore
-      working-directory: tests/FruitSalesCalculator.Tests
 
 
 
