@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../tests/FruitSalesCalculator.Tests/FruitSalesCalculator.Tests.csproj" Id="d9f801dd-42f2-49d7-a44c-472259cac060" />
+  <Project Path="FruitSalesCalculator.Api/FruitSalesCalculator.Api.csproj" Id="fde70d58-47fe-4996-b8c6-047692f359c1" />
+  <Project Path="FruitSalesCalculator.Console/FruitSalesCalculator.Console.csproj" Id="5a0d3e95-cd38-4af7-a7ce-42613a768362" />
+  <Project Path="FruitSalesCalculator.Domain/FruitSalesCalculator.Domain.csproj" />
+</Solution>
