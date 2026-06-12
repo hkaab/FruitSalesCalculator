@@ -19,10 +19,10 @@ jobs:
         dotnet-version: 10.0.x
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: src/FruitSalesCalculator
+      working-directory: src
     - name: Build
       run: dotnet build --no-restore
-      working-directory: src/FruitSalesCalculator
+      working-directory: src
     - name: Test
       run: dotnet test --no-build --no-restore
       working-directory: tests/FruitSalesCalculator.Tests
