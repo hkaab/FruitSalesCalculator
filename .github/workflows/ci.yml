@@ -25,4 +25,17 @@ jobs:
       working-directory: src/FruitSalesCalculator
     - name: Test
       run: dotnet test --no-build --no-restore
-      working-directory: src/ToyRobotSimulator
+      working-directory: tests/FruitSalesCalculator.Tests
+
+
+
+
+
+
+
+
+
+
+
+
+
