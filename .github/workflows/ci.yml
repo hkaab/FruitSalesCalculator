@@ -1,15 +1,10 @@
-name: Build & Test
+name: build&test
 
 on:
   push:
-    branches:
-      - main
-      - master
-
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -17,21 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4  
-        with:
-          dotnet-version: 10.0.x
-
-      - name: Restore
-        run: dotnet restore       
-        working-directory: src/FruitSalesCalculator
-   
-     - name: Build
-       run: dotnet build --no-restore
-       working-directory: src/FruitSalesCalculator
-       
-     - name: Test
-       run: dotnet test --no-build --no-restore
-       working-directory: src/FruitSalesCalculator
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 10.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: src/FruitSalesCalculator
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: src/FruitSalesCalculator
+    - name: Test
+      run: dotnet test --no-build --no-restore
+      working-directory: src/ToyRobotSimulator
