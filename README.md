@@ -1,6 +1,7 @@
 # Fruit Sales Calculator
 
 ![Build](https://github.com/hkaab/FruitSalesCalculator/actions/workflows/ci.yml/badge.svg)
+![Build](https://github.com/hkaab/FruitSalesCalculator/actions/workflows/ut.yml/badge.svg)
 
 A simple fruit pricing engine built with .NET 8 demonstrating SOLID principles, Strategy Pattern implementation, unit testing, dependency injection, and multiple presentation layers (Console and Web API).
 
