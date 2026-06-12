@@ -3,13 +3,23 @@
 ![Build](https://github.com/hkaab/FruitSalesCalculator/actions/workflows/ci.yml/badge.svg)
 ![Build](https://github.com/hkaab/FruitSalesCalculator/actions/workflows/ut.yml/badge.svg)
 
-A simple fruit pricing engine built with .NET 8 demonstrating SOLID principles, Strategy Pattern implementation, unit testing, dependency injection, and multiple presentation layers (Console and Web API).
+A sample fruit pricing engine built with **.NET 10**, demonstrating:
+
+- SOLID Principles
+- Strategy Pattern
+- Dependency Injection
+- Unit Testing with xUnit
+- ASP.NET Core Web API
+- Console Application
+- GitHub Actions CI
 
 ---
 
-## Overview
+# Overview
 
 This application calculates the total cost of fruit orders using configurable pricing strategies.
+
+The solution was built to satisfy the coding exercise requirements while demonstrating clean architecture principles and extensibility.
 
 Supported pricing models:
 
@@ -17,11 +27,17 @@ Supported pricing models:
 - Per Item
 - Discounted Per Kilogram
 
-The solution was intentionally designed to be extensible so new fruit types, promotions, and pricing models can be added without modifying existing business logic.
+Example:
+
+| Fruit | Pricing |
+|---------|---------|
+| Apple | $2.00 per kg |
+| Banana | $0.30 per item |
+| Cherry | $5.00 per kg with 10% discount above 2kg |
 
 ---
 
-## Architecture
+# Solution Structure
 
 ```text
 FruitSalesCalculator.sln
@@ -33,44 +49,91 @@ src/
 
 tests/
 └── FruitSalesCalculator.Tests
+
+.github/
+└── workflows
+    └── ci.yml
+
+README.md
+global.json
+Directory.Packages.props
 ```
-
-### Domain
-
-Contains:
-
-- Business entities
-- Pricing strategies
-- Domain services
-- Interfaces
-
-### API
-
-ASP.NET Core Web API exposing pricing functionality.
-
-### Console
-
-Simple console application demonstrating usage.
-
-### Tests
-
-xUnit test suite covering domain and API behavior.
 
 ---
 
-## Design Pattern
+# Design Decisions
 
-### Strategy Pattern
+The solution is separated into multiple projects to demonstrate proper separation of concerns.
 
-Pricing calculations are encapsulated behind:
+## Domain
+
+Contains all business logic.
+
+Responsibilities:
+
+- Fruit definitions
+- Orders
+- Pricing calculations
+- Catalog management
+- Business services
+
+No UI, Console, or API concerns exist in this layer.
+
+---
+
+## API
+
+ASP.NET Core Web API exposing the pricing engine through HTTP endpoints.
+
+Responsibilities:
+
+- Request validation
+- DTOs
+- HTTP endpoints
+- Swagger documentation
+
+Contains no pricing logic.
+
+---
+
+## Console
+
+Simple console application demonstrating how the pricing engine can be consumed by another application.
+
+Contains no pricing logic.
+
+---
+
+## Tests
+
+Contains unit tests validating:
+
+- Pricing calculations
+- Order totals
+- Catalog behavior
+- Controller behavior
+- Validation rules
+
+---
+
+# Design Pattern
+
+## Strategy Pattern
+
+Pricing behavior is encapsulated inside pricing strategy implementations.
 
 ```csharp
-IPricingStrategy
+public interface IPricingStrategy
+{
+    decimal CalculatePrice(
+        decimal basePrice,
+        decimal quantity);
+}
 ```
 
 Implementations:
 
-```csharp
+```text
 PerKgPricingStrategy
 
 PerItemPricingStrategy
@@ -78,58 +141,119 @@ PerItemPricingStrategy
 DiscountedKgPricingStrategy
 ```
 
-This enables adding new pricing methods without modifying existing code.
+### Why Strategy Pattern?
 
-Example:
+Different fruits can use different pricing models.
+
+Instead of adding:
+
+```csharp
+switch(fruitType)
+{
+}
+```
+
+or
+
+```csharp
+if(...)
+{
+}
+```
+
+pricing behavior is delegated to strategy implementations.
+
+This makes the solution:
+
+- Easier to maintain
+- Easier to test
+- Easier to extend
+
+---
+
+## Example Extension
+
+Adding a new pricing model requires only a new strategy implementation.
 
 ```csharp
 public sealed class BuyOneGetOneFreeStrategy
     : IPricingStrategy
 {
+    public decimal CalculatePrice(
+        decimal basePrice,
+        decimal quantity)
+    {
+        var payableItems =
+            Math.Ceiling(quantity / 2m);
+
+        return payableItems * basePrice;
+    }
 }
 ```
 
+No existing code needs to be modified.
+
 ---
 
-## SOLID Principles
+# SOLID Principles
 
-### Single Responsibility Principle
+## Single Responsibility Principle
 
-Each class has one responsibility.
+Each class has a single responsibility.
 
 Examples:
 
-- Fruit → Fruit information
-- OrderCalculator → Order calculations
-- InMemoryFruitCatalog → Fruit lookup
-- Pricing strategies → Price calculations
+```text
+Fruit
+    → Fruit data
 
----
+OrderCalculator
+    → Order total calculations
 
-### Open Closed Principle
+InMemoryFruitCatalog
+    → Fruit lookup
 
-New pricing strategies can be added without modifying existing code.
-
-```csharp
-public sealed class LoyaltyDiscountStrategy
-    : IPricingStrategy
-{
-}
+PerKgPricingStrategy
+    → Per kilogram pricing
 ```
 
 ---
 
-### Liskov Substitution Principle
+## Open Closed Principle
 
-All pricing strategies can be substituted through:
+The system is open for extension but closed for modification.
+
+New pricing models can be added by implementing:
 
 ```csharp
 IPricingStrategy
 ```
 
+without changing existing code.
+
 ---
 
-### Interface Segregation Principle
+## Liskov Substitution Principle
+
+All pricing strategies are interchangeable.
+
+```csharp
+IPricingStrategy strategy =
+    new PerKgPricingStrategy();
+```
+
+can be replaced with:
+
+```csharp
+IPricingStrategy strategy =
+    new DiscountedKgPricingStrategy(...);
+```
+
+without breaking consumers.
+
+---
+
+## Interface Segregation Principle
 
 Small focused interfaces:
 
@@ -139,11 +263,13 @@ IFruitCatalog
 IOrderCalculator
 ```
 
+Clients only depend on functionality they actually need.
+
 ---
 
-### Dependency Inversion Principle
+## Dependency Inversion Principle
 
-Application services depend on abstractions rather than concrete implementations.
+Application services depend on abstractions.
 
 ```csharp
 IFruitCatalog
@@ -151,11 +277,13 @@ IFruitCatalog
 IOrderCalculator
 ```
 
+instead of concrete implementations.
+
 ---
 
-## Supported Fruits
+# Supported Fruits
 
-### Apple
+## Apple
 
 Price:
 
@@ -171,7 +299,7 @@ PerKgPricingStrategy
 
 ---
 
-### Banana
+## Banana
 
 Price:
 
@@ -187,7 +315,7 @@ PerItemPricingStrategy
 
 ---
 
-### Cherry
+## Cherry
 
 Price:
 
@@ -198,7 +326,7 @@ $5.00 per kg
 Discount:
 
 ```text
-10% discount for orders greater than 2kg
+10% discount for orders above 2kg
 ```
 
 Pricing Strategy:
@@ -209,7 +337,7 @@ DiscountedKgPricingStrategy
 
 ---
 
-## Example Calculation
+# Example Calculation
 
 Order:
 
@@ -224,23 +352,23 @@ Calculation:
 ```text
 Apple
 
-3 x $2.00
+3 × $2.00
 =
 $6.00
 
 Banana
 
-10 x $0.30
+10 × $0.30
 =
 $3.00
 
 Cherry
 
-3 x $5.00
+3 × $5.00
 =
 $15.00
 
-10% discount
+10% Discount
 =
 $13.50
 ```
@@ -253,17 +381,139 @@ $22.50
 
 ---
 
-## API
+# Prerequisites
 
-### Calculate Order
+Install:
 
-Endpoint:
+- .NET 10 SDK
+
+Verify installation:
+
+```bash
+dotnet --version
+```
+
+Expected:
+
+```text
+10.0.100
+```
+
+(or later)
+
+---
+
+# Clone Repository
+
+```bash
+git clone https://github.com/<your-github-username>/FruitSalesCalculator.git
+
+cd FruitSalesCalculator
+```
+
+---
+
+# Restore Dependencies
+
+```bash
+dotnet restore
+```
+
+---
+
+# Build Solution
+
+```bash
+dotnet build
+```
+
+Expected output:
+
+```text
+Build succeeded.
+```
+
+---
+
+# Run Unit Tests
+
+```bash
+dotnet test
+```
+
+Expected output:
+
+```text
+Passed! All tests passed.
+```
+
+---
+
+# Running the Console Application
+
+The Console application demonstrates the pricing engine with a sample order.
+
+Run:
+
+```bash
+dotnet run --project src/FruitSalesCalculator.Console
+```
+
+Expected output:
+
+```text
+Fruit Sales Calculator
+======================
+
+Apple      Qty: 3     Price: $6.00
+Banana     Qty: 10    Price: $3.00
+Cherry     Qty: 3     Price: $13.50
+
+Total Cost: $22.50
+```
+
+---
+
+# Running the Web API
+
+Run:
+
+```bash
+dotnet run --project src/FruitSalesCalculator.Api
+```
+
+Expected output:
+
+```text
+Now listening on:
+https://localhost:7xxx
+```
+
+---
+
+# Swagger
+
+Navigate to:
+
+```text
+https://localhost:7xxx/swagger
+```
+
+Swagger UI provides interactive API documentation.
+
+---
+
+# API Endpoints
+
+## Calculate Order
+
+### Request
 
 ```http
 POST /api/orders/calculate
 ```
 
-Request:
+Request body:
 
 ```json
 {
@@ -284,7 +534,7 @@ Request:
 }
 ```
 
-Response:
+### Response
 
 ```json
 {
@@ -294,115 +544,120 @@ Response:
 
 ---
 
-## Running the Solution
+# Running in Visual Studio
 
-### Restore Packages
-
-```bash
-dotnet restore
-```
-
-### Build
-
-```bash
-dotnet build
-```
-
-### Run Tests
-
-```bash
-dotnet test
-```
-
----
-
-## Run Console Application
-
-```bash
-dotnet run --project src/FruitSalesCalculator.Console
-```
-
-Example output:
+1. Open:
 
 ```text
-Fruit Sales Calculator
-======================
-
-Apple      Qty: 3     Price: $6.00
-Banana     Qty: 10    Price: $3.00
-Cherry     Qty: 3     Price: $13.50
-
-Total Cost: $22.50
+FruitSalesCalculator.sln
 ```
 
----
-
-## Run API
-
-```bash
-dotnet run --project src/FruitSalesCalculator.Api
-```
-
-Swagger:
+2. Set startup project:
 
 ```text
-https://localhost:5001/swagger
+FruitSalesCalculator.Api
+```
+
+or
+
+```text
+FruitSalesCalculator.Console
+```
+
+3. Press:
+
+```text
+F5
+```
+
+to run with debugging.
+
+---
+
+# Continuous Integration
+
+GitHub Actions automatically performs:
+
+- Restore
+- Build
+- Test
+
+for every:
+
+- Push
+- Pull Request
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
 ```
 
 ---
 
-## Testing
+# Test Coverage
 
 The solution includes tests for:
 
+### Pricing
+
+- PerKgPricingStrategy
+- PerItemPricingStrategy
+- DiscountedKgPricingStrategy
+
+### Domain
+
 - Fruit validation
 - OrderItem validation
-- Pricing strategies
 - Order calculation
-- Fruit catalog
-- API controller
+
+### Catalog
+
+- Fruit lookup
+- Unknown fruit handling
+- Case-insensitive lookup
+
+### API
+
+- Successful order calculation
+- Invalid fruit handling
 
 Coverage includes:
 
 ```text
-✓ PerKgPricingStrategy
+✓ Pricing calculations
 
-✓ PerItemPricingStrategy
+✓ Validation rules
 
-✓ DiscountedKgPricingStrategy
+✓ Order totals
 
-✓ Fruit constructor validation
+✓ Catalog behavior
 
-✓ OrderItem validation
-
-✓ Fruit catalog
-
-✓ Order calculation
-
-✓ API controller behavior
+✓ Controller behavior
 
 ✓ Error handling
 ```
 
 ---
 
-## Future Enhancements
+# Future Enhancements
 
-Potential additions:
+Potential future additions:
 
 - Buy One Get One Free
-- Seasonal Pricing
-- Loyalty Discounts
+- Seasonal Discounts
+- Loyalty Pricing
 - Percentage Promotions
-- Database-backed Fruit Catalog
-- Inventory Management
+- Inventory Tracking
+- Database-backed Catalog
 - Persistence Layer
+- Product Management API
 
-All can be added with minimal impact due to the Strategy Pattern and SOLID architecture.
+All of these can be implemented with minimal impact because pricing behavior is isolated through the Strategy Pattern.
 
 ---
 
-## Author Notes
+# Author Notes
 
 This solution was intentionally designed to balance:
 
@@ -410,3 +665,7 @@ This solution was intentionally designed to balance:
 - Maintainability
 - Extensibility
 - Testability
+
+while avoiding unnecessary complexity for the scope of the exercise.
+
+The architecture demonstrates clean separation of concerns and provides a solid foundation for future enhancements while remaining easy to understand and discuss during a technical interview.
