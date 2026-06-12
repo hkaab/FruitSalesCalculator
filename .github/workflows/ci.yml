@@ -25,10 +25,13 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Test
-        run: dotnet test --configuration Release --no-build
+        run: dotnet restore       
+        working-directory: src/FruitSalesCalculator
+   
+     - name: Build
+       run: dotnet build --no-restore
+       working-directory: src/FruitSalesCalculator
+       
+     - name: Test
+       run: dotnet test --no-build --no-restore
+       working-directory: src/FruitSalesCalculator
