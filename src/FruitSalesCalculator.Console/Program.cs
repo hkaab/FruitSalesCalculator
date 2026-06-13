@@ -7,7 +7,6 @@ var services = new ServiceCollection();
 
 services.AddSingleton<IFruitCatalog, InMemoryFruitCatalog>();
 services.AddScoped<IOrderCalculator, OrderCalculator>();
-
 services.AddTransient<ConsoleApplication>();
 
 var serviceProvider =

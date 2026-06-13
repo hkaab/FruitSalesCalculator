@@ -45,6 +45,10 @@ public sealed class ConsoleApplication
             _fruitCatalog.GetByName("Cherry"),
             3);
 
+        order.AddItem(
+            _fruitCatalog.GetByName("Date"),
+            12);
+
         return order;
     }
 
@@ -52,7 +56,7 @@ public sealed class ConsoleApplication
         Order order)
     {
         System.Console.WriteLine("Fruit Sales Calculator");
-        System.Console.WriteLine("======================");
+        System.Console.WriteLine("=============================================");
         System.Console.WriteLine();
 
         foreach (var item in order.Items)

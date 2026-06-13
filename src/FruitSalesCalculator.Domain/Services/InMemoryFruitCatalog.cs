@@ -35,6 +35,13 @@ public sealed class InMemoryFruitCatalog : IFruitCatalog
                     new DiscountedKgPricingStrategy(
                         thresholdKg: 2,
                         discountPercentage: 10))
+            },
+            {
+                "Date",
+                new Fruit(
+                    "Date",
+                    12.00m,
+                    new BulkDiscounrDecorator(new PerKgPricingStrategy ()))
             }
         };
     }
