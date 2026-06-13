@@ -12,6 +12,6 @@ public sealed class OrderCalculator : IOrderCalculator
         return order.Items.Sum(item =>
             item.Fruit.PricingStrategy.CalculatePrice(
                 item.Fruit.BasePrice,
-                item.Quantity));
+                item.Quantity, new OrderContext()));
     }
 }

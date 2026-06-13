@@ -1,4 +1,5 @@
-﻿using FruitSalesCalculator.Domain.Pricing;
+﻿using FruitSalesCalculator.Domain.Models;
+using FruitSalesCalculator.Domain.Pricing;
 using Xunit;
 
 namespace FruitSalesCalculator.Tests.Pricing;
@@ -15,7 +16,7 @@ public class PricingStrategyTests
         // Act
 
         var result =
-            strategy.CalculatePrice(2m, 3m);
+            strategy.CalculatePrice(2m, 3m, new Domain.Models.OrderContext());
 
         // Assert
 
@@ -32,7 +33,7 @@ public class PricingStrategyTests
         // Act
 
         var result =
-            strategy.CalculatePrice(0.30m, 10m);
+            strategy.CalculatePrice(0.30m, 10m, new Domain.Models.OrderContext());
 
         // Assert
 
@@ -54,7 +55,7 @@ public class PricingStrategyTests
         var result =
             strategy.CalculatePrice(
                 5m,
-                2m);
+                2m, new Domain.Models.OrderContext());
 
         // Assert
 
@@ -76,7 +77,7 @@ public class PricingStrategyTests
         var result =
             strategy.CalculatePrice(
                 5m,
-                3m);
+                3m, new OrderContext());
 
         // Assert
 
@@ -99,7 +100,37 @@ public class PricingStrategyTests
         var result =
             strategy.CalculatePrice(
                 basePrice,
-                quantity);
+                quantity,new OrderContext());
+        // Assert
+        Assert.AreEqual(expectedPrice, result);
+    }
+    [Fact]
+    public void BulkDiscountDecorator_ShouldThrowException_WhenInnerStrategyIsNull()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            var strategy =
+                new BulkDiscountDecorator(null!);
+        });
+    }
+    [Theory]
+    [InlineData(12, 12, 136.8)] // Discount applied
+    public void LoyaltyDiscountDecorator_ShouldApplyLoyaltyDiscount_WhenCustomerIsLoyal(
+        decimal basePrice,
+        decimal quantity,
+        decimal expectedPrice)
+    {
+        // Arrange
+        var strategy =
+            new LoyaltyDiscountDecorator(
+                new PerKgPricingStrategy());
+        // Act
+        var result =
+            strategy.CalculatePrice(
+                basePrice,
+                quantity, new Domain.Models.OrderContext { IsLoyalCustomer = true }
+                );
         // Assert
         Assert.AreEqual(expectedPrice, result);
     }

@@ -64,7 +64,7 @@ public sealed class ConsoleApplication
             var price =
                 item.Fruit.PricingStrategy.CalculatePrice(
                     item.Fruit.BasePrice,
-                    item.Quantity);
+                    item.Quantity,new OrderContext());
 
             System.Console.WriteLine(
                 $"{item.Fruit.Name,-10} Qty: {item.Quantity,-5} Price: ${price:F2}");
