@@ -1,10 +1,12 @@
 ﻿using FruitSalesCalculator.Console.Application;
-using FruitSalesCalculator.Domain.DependencyInjection;
+using FruitSalesCalculator.Domain.Interfaces;
+using FruitSalesCalculator.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
 
-services.AddFruitSalesCalculator();
+services.AddSingleton<IFruitCatalog, InMemoryFruitCatalog>();
+services.AddScoped<IOrderCalculator, OrderCalculator>();
 
 services.AddTransient<ConsoleApplication>();
 
