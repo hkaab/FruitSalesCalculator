@@ -82,4 +82,25 @@ public class PricingStrategyTests
 
         Assert.AreEqual(13.5m, result);
     }
+
+    [Theory]
+    [InlineData(12, 9, 108)] // No discount
+    [InlineData(12, 12, 129.6)] // Discount applied
+    public void BulkDiscountDecorator_ShouldApplyBulkDiscount_WhenThresholdExceeded(
+        decimal basePrice,
+        decimal quantity,
+        decimal expectedPrice)
+    {
+        // Arrange
+        var strategy =
+            new BulkDiscountDecorator(
+                new PerKgPricingStrategy());
+        // Act
+        var result =
+            strategy.CalculatePrice(
+                basePrice,
+                quantity);
+        // Assert
+        Assert.AreEqual(expectedPrice, result);
+    }
 }

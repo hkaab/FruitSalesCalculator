@@ -4,10 +4,10 @@ using System.Text;
 
 namespace FruitSalesCalculator.Domain.Pricing
 {
-    public class BulkDiscounrDecorator : IPricingStrategy
+    public class BulkDiscountDecorator : IPricingStrategy
     {
         private readonly IPricingStrategy _innerStrategy;
-        public BulkDiscounrDecorator(IPricingStrategy innerStrategy)
+        public BulkDiscountDecorator(IPricingStrategy innerStrategy)
         {
             _innerStrategy = innerStrategy;
         }

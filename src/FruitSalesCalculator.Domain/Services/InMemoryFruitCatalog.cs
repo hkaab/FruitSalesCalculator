@@ -41,7 +41,7 @@ public sealed class InMemoryFruitCatalog : IFruitCatalog
                 new Fruit(
                     "Date",
                     12.00m,
-                    new BulkDiscounrDecorator(new PerKgPricingStrategy ()))
+                    new BulkDiscountDecorator(new PerKgPricingStrategy ()))
             }
         };
     }
