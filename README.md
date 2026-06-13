@@ -406,7 +406,7 @@ Expected:
 # Clone Repository
 
 ```bash
-git clone https://github.com/<your-github-username>/FruitSalesCalculator.git
+git clone https://github.com/hkaab/FruitSalesCalculator.git
 
 cd FruitSalesCalculator
 ```
