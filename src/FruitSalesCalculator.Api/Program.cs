@@ -1,9 +1,8 @@
 
 using FruitSalesCalculator.Api.Middleware;
-using FruitSalesCalculator.Domain.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using FruitSalesCalculator.Domain.Interfaces;
+using FruitSalesCalculator.Domain.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddFruitSalesCalculator();
+builder.Services.AddSingleton<IFruitCatalog, InMemoryFruitCatalog>();
+
+builder.Services.AddScoped<IOrderCalculator, OrderCalculator>();
 
 var app = builder.Build();
 
